@@ -38,7 +38,7 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
 
     public void OnUnityAdsShowFailure(string placementId, UnityAdsShowError error, string message)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Failed to show ads");
     }
 
     public void OnUnityAdsShowStart(string placementId) {}

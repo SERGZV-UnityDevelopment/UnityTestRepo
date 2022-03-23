@@ -18,7 +18,7 @@ public class RewardAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowListe
         LoadAd();
     }
     
-    public void LoadAd()
+    private void LoadAd()
     {
         Advertisement.Load(_adUnitId, this);
     }
@@ -46,10 +46,13 @@ public class RewardAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowListe
 
     public void OnUnityAdsShowStart(string placementId)
     {
-        
+        Debug.Log("Method called when advertising starts");
     }
 
-    public void OnUnityAdsShowClick(string placementId) {}
+    public void OnUnityAdsShowClick(string placementId)
+    {
+        Debug.Log("Method called when an ad is clicked");
+    }
 
     public void OnUnityAdsShowComplete(string placementId, UnityAdsShowCompletionState showCompletionState)
     {
