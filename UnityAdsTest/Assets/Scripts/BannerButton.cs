@@ -1,12 +1,14 @@
+using System;
 using UnityEngine;
 using UnityEngine.Advertisements;
 using UnityEngine.UI;
 
 public class BannerButton : MonoBehaviour
 {
+    [SerializeField] private AdvertisingService adService;
     [SerializeField] private BannerPosition bannerPosition = BannerPosition.TOP_CENTER;
     [SerializeField] private Button showBannerButton;
-
+    
     private string _androidAdUnitId = "Banner_Android";
     private string _iosAdUnitId = "Banner_iOS";
     private string _adUnitId;
@@ -15,16 +17,27 @@ public class BannerButton : MonoBehaviour
     {
         _adUnitId = (Application.platform == RuntimePlatform.IPhonePlayer) ? _iosAdUnitId : _androidAdUnitId;
         showBannerButton.interactable = false;
+        Advertisement.Banner.SetPosition(bannerPosition);
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        Advertisement.Banner.SetPosition(bannerPosition);
+        adService.InitializationComplete += OnInitializationComplete;
+    }
+
+    private void OnDisable()
+    {
+        adService.InitializationComplete -= OnInitializationComplete;
+    }
+
+    private void OnInitializationComplete()
+    {
         LoadAd();
     }
 
     private void LoadAd()
     {
+        Debug.Log("Uploading banner ads");
         BannerLoadOptions options = new BannerLoadOptions
         {
             loadCallback = OnBannerLoaded,
@@ -43,8 +56,7 @@ public class BannerButton : MonoBehaviour
 
     private void OnBannerError(string message)
     {
-        Debug.Log($"Banner Error: {message}, load another banner");
-        LoadAd();
+        Debug.LogError($"Banner Error: {message}");
     }
     
     private void ShowBannerAd()
