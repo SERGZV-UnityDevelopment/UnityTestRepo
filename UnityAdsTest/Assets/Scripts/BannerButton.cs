@@ -37,7 +37,7 @@ public class BannerButton : MonoBehaviour
 
     private void LoadAd()
     {
-        Debug.Log("Uploading banner ads");
+//      Debug.Log("Uploading banner ads");
         BannerLoadOptions options = new BannerLoadOptions
         {
             loadCallback = OnBannerLoaded,
@@ -56,7 +56,7 @@ public class BannerButton : MonoBehaviour
 
     private void OnBannerError(string message)
     {
-        Debug.LogError($"Banner Error: {message}");
+//        Debug.LogError($"Banner Error: {message}");
     }
     
     private void ShowBannerAd()

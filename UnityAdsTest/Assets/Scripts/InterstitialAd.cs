@@ -28,6 +28,7 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
     
     public void OnUnityAdsAdLoaded(string placementId)
     {
+        // Ad is not ready need to wait
         Debug.Log("Interstitial Ad Ready");
     }
 
@@ -38,7 +39,7 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
 
     public void OnUnityAdsShowFailure(string placementId, UnityAdsShowError error, string message)
     {
-        Debug.Log("Failed to show ads");
+        Debug.Log("Failed to show ads: " + placementId);
     }
 
     public void OnUnityAdsShowStart(string placementId) {}

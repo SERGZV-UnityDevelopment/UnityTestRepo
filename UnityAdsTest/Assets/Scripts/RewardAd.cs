@@ -41,7 +41,8 @@ public class RewardAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowListe
 
     public void OnUnityAdsShowFailure(string placementId, UnityAdsShowError error, string message)
     {
-        Debug.Log("Failed to show ads");
+        // Ad is not ready need to wait
+        Debug.Log("Failed to show ads: " + placementId);
     }
 
     public void OnUnityAdsShowStart(string placementId)
@@ -56,7 +57,7 @@ public class RewardAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowListe
 
     public void OnUnityAdsShowComplete(string placementId, UnityAdsShowCompletionState showCompletionState)
     {
-        if (placementId.Equals(_adUnitId) && showCompletionState.Equals(UnityAdsCompletionState.COMPLETED))
+        if (placementId == _adUnitId && showCompletionState == UnityAdsShowCompletionState.COMPLETED)
         {
             Debug.Log("The player watched the ad to the end, we give a reward");
             GiveReward(_currentReward);
@@ -65,7 +66,7 @@ public class RewardAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowListe
         {
             Debug.Log("The player skipped the ad and will not receive a reward");
         }
-        
+
         LoadAd();
     }
 
