@@ -3,6 +3,7 @@ using UnityEngine.Advertisements;
 
 public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowListener
 {
+    [SerializeField] private AdvertisingService adService;
     public static InterstitialAd singletone;
     
     private string _androidAdUnitId = "Interstitial_Android";
@@ -13,9 +14,23 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
     {
         singletone = this;
         _adUnitId = (Application.platform == RuntimePlatform.IPhonePlayer) ? _iosAdUnitId : _androidAdUnitId;
-        LoadAd();
     }
 
+    private void OnEnable()
+    {
+        adService.InitializationComplete += OnInitializationComplete;
+    }
+
+    private void OnDisable()
+    {
+        adService.InitializationComplete -= OnInitializationComplete;
+    }
+    
+    private void OnInitializationComplete()
+    {
+        LoadAd();
+    }
+    
     private void LoadAd()
     {
         Advertisement.Load(_adUnitId, this);

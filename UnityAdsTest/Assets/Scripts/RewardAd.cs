@@ -3,6 +3,7 @@ using UnityEngine.Advertisements;
 
 public class RewardAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowListener
 {
+    [SerializeField] private AdvertisingService adService;
     public static RewardAd singletone;
     
     private string _androidAdUnitId = "Rewarded_Android";
@@ -15,6 +16,20 @@ public class RewardAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowListe
     {
         singletone = this;
         _adUnitId = (Application.platform == RuntimePlatform.IPhonePlayer) ? _iosAdUnitId : _androidAdUnitId;
+    }
+    
+    private void OnEnable()
+    {
+        adService.InitializationComplete += OnInitializationComplete;
+    }
+
+    private void OnDisable()
+    {
+        adService.InitializationComplete -= OnInitializationComplete;
+    }
+    
+    private void OnInitializationComplete()
+    {
         LoadAd();
     }
     
@@ -57,7 +72,7 @@ public class RewardAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowListe
 
     public void OnUnityAdsShowComplete(string placementId, UnityAdsShowCompletionState showCompletionState)
     {
-        if (placementId == _adUnitId && showCompletionState == UnityAdsShowCompletionState.COMPLETED)
+        if (showCompletionState == UnityAdsShowCompletionState.COMPLETED)
         {
             Debug.Log("The player watched the ad to the end, we give a reward");
             GiveReward(_currentReward);
