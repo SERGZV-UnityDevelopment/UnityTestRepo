@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Purchasing;
 using UnityEngine.UI;
 
 public class Store : MonoBehaviour
@@ -12,18 +13,32 @@ public class Store : MonoBehaviour
     
     private void Start()
     {
+        PurchaseService.PurchaseConsumable += OnPurchaseConsumable;
+        PurchaseService.PurchaseNonConsumable += OnPurchaseNonConsumable;
         text.text = _coins.ToString();
     }
 
-    public void OnReusablePurchaseButton()
+    private void OnPurchaseConsumable(PurchaseEventArgs args)
     {
-        _coins += 10;
-        text.text = _coins.ToString();
+        switch (args.purchasedProduct.definition.id)
+        {
+            case "Diamond":
+                _coins += 10;
+                text.text = _coins.ToString();
+                break;
+        }
+    }
+    
+    private void OnPurchaseNonConsumable(PurchaseEventArgs args)
+    {
+        switch (args.purchasedProduct.definition.id)
+        {
+            case "DisablingAds":
+                _nonConsumableButton.interactable = false;
+                _buttonText.text = "Куплено";
+                break;
+        }
     }
 
-    public void OnOneTimePurchaseButton()
-    {
-        _nonConsumableButton.interactable = false;
-        _buttonText.text = "Купленно";
-    }
+    
 }

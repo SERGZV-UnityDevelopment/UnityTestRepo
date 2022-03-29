@@ -157,8 +157,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.2943, y: -0.000094414}
-  m_SizeDelta: {x: 293.41, y: 100}
+  m_AnchoredPosition: {x: 0, y: 0.000030518}
+  m_SizeDelta: {x: 500, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2799635
 MonoBehaviour:
@@ -180,7 +180,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Buy disable ads
+  m_text: 'Buy disable ads
+
+    2.00$'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -207,7 +209,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 44.1
+  m_fontSize: 62.4
   m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -300,9 +302,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f789c63879024e45acb4401273e48c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nc_products:
-  - Diamond
   c_products:
+  - Diamond
+  nc_products:
   - DisablingAds
 --- !u!1 &104727547
 GameObject:
@@ -421,8 +423,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.2943, y: -0.000094414}
-  m_SizeDelta: {x: 293.41, y: 100}
+  m_AnchoredPosition: {x: 0, y: 0.0000076293945}
+  m_SizeDelta: {x: 500, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &196448460
 MonoBehaviour:
@@ -444,7 +446,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Buy 10 diamond
+  m_text: 'Buy 10 diamonds
+
+    0.99$'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -471,7 +475,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 44.1
+  m_fontSize: 56.8
   m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -667,6 +671,7 @@ GameObject:
   - component: {fileID: 422475854}
   - component: {fileID: 422475853}
   - component: {fileID: 422475852}
+  - component: {fileID: 422475855}
   m_Layer: 5
   m_Name: OneTimePurchaseButton
   m_TagString: Untagged
@@ -738,9 +743,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1856667710}
-        m_TargetAssemblyTypeName: Store, Assembly-CSharp
-        m_MethodName: OnOneTimePurchaseButton
+      - m_Target: {fileID: 422475855}
+        m_TargetAssemblyTypeName: NonConsumablePurchaseButton, Assembly-CSharp
+        m_MethodName: OnBuyNonConsumable
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -788,6 +793,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 422475850}
   m_CullTransparentMesh: 1
+--- !u!114 &422475855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 422475850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aab232983320f44409fb8b525d375a8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  purchaseService: {fileID: 80430112}
+  nonConsumableGoods: 0
 --- !u!1 &667287111
 GameObject:
   m_ObjectHideFlags: 0
@@ -897,6 +916,7 @@ GameObject:
   - component: {fileID: 1059681536}
   - component: {fileID: 1059681535}
   - component: {fileID: 1059681534}
+  - component: {fileID: 1059681537}
   m_Layer: 5
   m_Name: ConsumablePurchaseButton
   m_TagString: Untagged
@@ -968,22 +988,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1856667710}
-        m_TargetAssemblyTypeName: Store, Assembly-CSharp
-        m_MethodName: OnReusablePurchaseButton
+      - m_Target: {fileID: 1059681537}
+        m_TargetAssemblyTypeName: ConsumablePurchaseButton, Assembly-CSharp
+        m_MethodName: OnBuyConsumable
         m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PurchaseManager, Assembly-CSharp
-        m_MethodName: BuyConsumable
-        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1030,6 +1038,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1059681532}
   m_CullTransparentMesh: 1
+--- !u!114 &1059681537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1059681532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3339860f2d4e80649952972b41f6b586, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  purchaseService: {fileID: 80430112}
+  consumableGoods: 0
 --- !u!1 &1209931623
 GameObject:
   m_ObjectHideFlags: 0

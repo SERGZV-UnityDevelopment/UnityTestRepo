@@ -4,34 +4,19 @@ using UnityEngine.Purchasing;
 
 public class PurchaseService : MonoBehaviour, IStoreListener
 {
+    [Tooltip("Reusable goods. More suitable for buying game currency, etc.")]
+    [SerializeField] private string[] c_products;
+    
     [Tooltip("Not reusable products. More suitable for disabling ads, etc.")]
     [SerializeField] private string[] nc_products;
     
-    [Tooltip("Reusable goods. More suitable for buying game currency, etc.")]
-    [SerializeField] private string[] c_products;
-
     private static IStoreController m_StoreController;
     private static IExtensionProvider m_StoreExtenshionProvider;
     private int _currentProductIndex;
     
-    public delegate void OnSuccessConsumable(PurchaseEventArgs args);
-    public delegate void OnSuccessNonConsumable(PurchaseEventArgs args);
-    public delegate void OnFailedPurchase(Product product, PurchaseFailureReason failureReason);
-    
-    /// <summary>
-    /// An event that is triggered when a reusable item is successfully purchased.
-    /// </summary>
-    public static Action<PurchaseEventArgs> OnPurchaseConsumable;
-
-    /// <summary>
-    ///An event that is triggered when a non-reusable item is successfully purchased.
-    /// </summary>
-    public static Action<PurchaseEventArgs> OnPurchaseNonConsumable;
-    
-    /// <summary>
-    /// An event that is fired when a product purchase fails.
-    /// </summary>
-    public static Action<Product, PurchaseFailureReason> PurchaseFailed;
+    public static Action<PurchaseEventArgs> PurchaseConsumable = (args) => {};
+    public static Action<PurchaseEventArgs> PurchaseNonConsumable = (args) => {};
+    public static Action<Product, PurchaseFailureReason> PurchaseFailed = (product, reason) => {};
 
     private void Awake()
     {
@@ -68,7 +53,7 @@ public class PurchaseService : MonoBehaviour, IStoreListener
         BuyProductID(nc_products[index]);
     }
 
-    void BuyProductID(string productId)
+    public void BuyProductID(string productId)
     {
         if (IsInitialized())
         {
@@ -94,7 +79,7 @@ public class PurchaseService : MonoBehaviour, IStoreListener
 
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
     {
-        if (c_products.Length > 0 && String.Equals(args.purchasedProduct.definition.id, nc_products[_currentProductIndex],
+        if (c_products.Length > 0 && String.Equals(args.purchasedProduct.definition.id, c_products[_currentProductIndex],
             StringComparison.Ordinal)) OnSuccessC(args);
         else if (nc_products.Length > 0 && string.Equals(args.purchasedProduct.definition.id,
             nc_products[_currentProductIndex],
@@ -105,19 +90,19 @@ public class PurchaseService : MonoBehaviour, IStoreListener
 
     protected virtual void OnSuccessC(PurchaseEventArgs args)
     {
-        if (OnPurchaseConsumable != null) OnPurchaseConsumable.Invoke(args);
+        PurchaseConsumable.Invoke(args);
         Debug.Log($"Purchased consumable item {c_products[_currentProductIndex]}");
     }
 
     protected virtual void OnSuccessNC(PurchaseEventArgs args)
     {
-        if (OnPurchaseNonConsumable != null) OnPurchaseNonConsumable.Invoke(args);
+        PurchaseNonConsumable.Invoke(args);
         Debug.Log($"Purchased a one-time item {nc_products[_currentProductIndex]}");
     }
 
     protected virtual void OnFailedP(Product product, PurchaseFailureReason failureReason)
     {
-        if (PurchaseFailed != null) PurchaseFailed.Invoke(product, failureReason);
+        PurchaseFailed.Invoke(product, failureReason);
         Debug.Log($"OnPurchaseFailed: FAIL. Product: {product.definition.storeSpecificId}, {failureReason}");
     }
     
