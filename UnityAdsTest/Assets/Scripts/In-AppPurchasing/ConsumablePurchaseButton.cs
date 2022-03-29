@@ -1,16 +1,9 @@
-using System;
 using UnityEngine;
-
-public enum EConsumableGoods { Diamond }
 
 public class ConsumablePurchaseButton : MonoBehaviour
 {
     [SerializeField] private PurchaseService purchaseService;
-    [SerializeField] private EConsumableGoods consumableGoods; 
+    [SerializeField] private PurchaseService.EConsumableGoods purchasedItem;
     
-    public void OnBuyConsumable()
-    {
-        var id = Array.IndexOf(Enum.GetValues(consumableGoods.GetType()), consumableGoods);
-        purchaseService.BuyConsumable(id);
-    }
+    public void OnBuyConsumable() => purchaseService.BuyProduct(purchasedItem);
 }

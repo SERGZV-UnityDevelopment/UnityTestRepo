@@ -4,16 +4,15 @@ using UnityEngine.Purchasing;
 
 public class PurchaseService : MonoBehaviour, IStoreListener
 {
-    [Tooltip("Reusable goods. More suitable for buying game currency, etc.")]
-    [SerializeField] private string[] c_products;
-    
-    [Tooltip("Not reusable products. More suitable for disabling ads, etc.")]
-    [SerializeField] private string[] nc_products;
+    // Reusable goods. More suitable for buying game currency, etc.
+    public enum EConsumableGoods { Diamond }
+    // Not reusable products. More suitable for disabling ads, etc.
+    public enum ENonConsumableGoods { DisablingAds }
     
     private static IStoreController m_StoreController;
     private static IExtensionProvider m_StoreExtenshionProvider;
     private int _currentProductIndex;
-    
+
     public static Action<PurchaseEventArgs> PurchaseConsumable = (args) => {};
     public static Action<PurchaseEventArgs> PurchaseNonConsumable = (args) => {};
     public static Action<Product, PurchaseFailureReason> PurchaseFailed = (product, reason) => {};
@@ -26,34 +25,30 @@ public class PurchaseService : MonoBehaviour, IStoreListener
     private void InitializePurchasing()
     {
         var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
-        foreach (var s in c_products) builder.AddProduct(s, ProductType.Consumable);
-        foreach (var s in nc_products) builder.AddProduct(s, ProductType.NonConsumable);
+
+        var cArr = Enum.GetValues(typeof(EConsumableGoods)); 
+        var nonCArr = Enum.GetValues(typeof(ENonConsumableGoods)); 
+
+        foreach (var consumable in cArr) builder.AddProduct(consumable.ToString(), ProductType.Consumable);
+        foreach (var nonConsumable in nonCArr) builder.AddProduct(nonConsumable.ToString(), ProductType.NonConsumable);
+        
         UnityPurchasing.Initialize(this, builder);
     }
     
-    /// <summary>
-    /// Check if the item has been purchased.
-    /// </summary>
-    /// <param name="id">Индекс товара в списке.</param>
+    // Check if the item has been purchased.
     public static bool CheckBuyState(string id)
     {
         var product = m_StoreController.products.WithID(id);
         return product.hasReceipt;
     }
-
-    public void BuyConsumable(int index)
+    
+    public void BuyProduct <T> (T purchasedItem) where T : Enum
     {
-        _currentProductIndex = index;
-        BuyProductID(c_products[index]);
+        _currentProductIndex = Array.IndexOf(Enum.GetValues(purchasedItem.GetType()), purchasedItem);
+        BuyProductByID(purchasedItem.ToString());
     }
 
-    public void BuyNonConsumable(int index)
-    {
-        _currentProductIndex = index;
-        BuyProductID(nc_products[index]);
-    }
-
-    public void BuyProductID(string productId)
+    private void BuyProductByID(string productId)
     {
         if (IsInitialized())
         {
@@ -79,25 +74,32 @@ public class PurchaseService : MonoBehaviour, IStoreListener
 
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
     {
-        if (c_products.Length > 0 && String.Equals(args.purchasedProduct.definition.id, c_products[_currentProductIndex],
-            StringComparison.Ordinal)) OnSuccessC(args);
-        else if (nc_products.Length > 0 && string.Equals(args.purchasedProduct.definition.id,
-            nc_products[_currentProductIndex],
-            StringComparison.Ordinal)) OnSuccessNC(args);
-        else Debug.Log(string.Format($"ProcessPurchase: FAIL. Unrecognized product: {args.purchasedProduct.definition.id}"));
+        if 
+        (
+            Enum.GetValues(typeof(EConsumableGoods)).Length > 0 
+            && args.purchasedProduct.definition.id == Enum.GetName(typeof(EConsumableGoods), _currentProductIndex)
+        )   OnSuccessC(args);
+        else if 
+        (
+            Enum.GetValues(typeof(ENonConsumableGoods)).Length > 0 
+            && args.purchasedProduct.definition.id == Enum.GetName(typeof(ENonConsumableGoods), _currentProductIndex)
+        )   OnSuccessNC(args);
+        else
+            Debug.Log(string.Format($"ProcessPurchase: FAIL. Unrecognized product: {args.purchasedProduct.definition.id}"));
+        
         return PurchaseProcessingResult.Complete;
     }
 
     protected virtual void OnSuccessC(PurchaseEventArgs args)
     {
         PurchaseConsumable.Invoke(args);
-        Debug.Log($"Purchased consumable item {c_products[_currentProductIndex]}");
+        Debug.Log($"Purchased consumable item {Enum.GetName(typeof(EConsumableGoods), _currentProductIndex)}");
     }
 
     protected virtual void OnSuccessNC(PurchaseEventArgs args)
     {
         PurchaseNonConsumable.Invoke(args);
-        Debug.Log($"Purchased a one-time item {nc_products[_currentProductIndex]}");
+        Debug.Log($"Purchased a one-time item {Enum.GetName(typeof(ENonConsumableGoods), _currentProductIndex)}");
     }
 
     protected virtual void OnFailedP(Product product, PurchaseFailureReason failureReason)
