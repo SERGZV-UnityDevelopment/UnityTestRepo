@@ -6,47 +6,78 @@ using UnityEngine.UI;
 
 public class Store : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI text;
+    [SerializeField] private TextMeshProUGUI diamondsCount;
+    [SerializeField] private int coins;
     
-    [SerializeField] private int _coins;
-    [SerializeField] private Button _nonConsumableButton;
-    [SerializeField] private TextMeshProUGUI _buttonText;
+    [SerializeField] private Button nonConsumableButton;
+    [SerializeField] private TextMeshProUGUI ncButtonText;
+
+    [SerializeField] private Button subscriptionButton;
+    [SerializeField] private TextMeshProUGUI sButtonText;
     
     private void Start()
     {
+        PurchaseService.PurchasingsInitialized += OnPurchasingsInitialized;
         PurchaseService.PurchaseConsumable += OnPurchaseConsumable;
         PurchaseService.PurchaseNonConsumable += OnPurchaseNonConsumable;
-        text.text = _coins.ToString();
+        PurchaseService.PurchaseSubscription += OnPurchaseSubscription;
+        diamondsCount.text = coins.ToString();
     }
 
     public void OnCloseApp()
     {
         Application.Quit();
     }
+
+    private void OnPurchasingsInitialized()
+    {
+        if (PurchaseService.ProductPurchased(ENonConsumableGoods.disabling_ad)) 
+            DeactivateButton(nonConsumableButton, ncButtonText);   
+        
+        if (PurchaseService.ProductPurchased(ESubscriptionGoods.disabling_ad_month))
+            DeactivateButton(subscriptionButton, sButtonText);
+    }
     
     private void OnPurchaseConsumable(PurchaseEventArgs args)
     {
-        Enum.TryParse(args.purchasedProduct.definition.id, out PurchaseService.EConsumableGoods productName);
+        Enum.TryParse(args.purchasedProduct.definition.id, out EConsumableGoods productName);
         
         switch (productName)
         {
-            case PurchaseService.EConsumableGoods.diamond:
-                _coins += 10;
-                text.text = _coins.ToString();
+            case EConsumableGoods.diamond:
+                coins += 10;
+                diamondsCount.text = coins.ToString();
                 break;
         }
     }
     
     private void OnPurchaseNonConsumable(PurchaseEventArgs args)
     {
-        Enum.TryParse(args.purchasedProduct.definition.id, out PurchaseService.ENonConsumableGoods productName);
+        Enum.TryParse(args.purchasedProduct.definition.id, out ENonConsumableGoods productName);
         
         switch (productName)
         {
-            case PurchaseService.ENonConsumableGoods.disabling_ad:
-                _nonConsumableButton.interactable = false;
-                _buttonText.text = "Куплено";
+            case ENonConsumableGoods.disabling_ad:
+                DeactivateButton(nonConsumableButton, ncButtonText);
                 break;
         }
+    }
+
+    private void OnPurchaseSubscription(PurchaseEventArgs args)
+    {
+        Enum.TryParse(args.purchasedProduct.definition.id, out ESubscriptionGoods productName);
+
+        switch (productName)
+        {
+            case ESubscriptionGoods.disabling_ad_month:
+                DeactivateButton(subscriptionButton, sButtonText);
+                break;
+        }
+    }
+
+    private void DeactivateButton(Button buttonRoot, TextMeshProUGUI buttonText)
+    {
+        buttonRoot.interactable = false;
+        buttonText.text = "Куплено";
     }
 }
