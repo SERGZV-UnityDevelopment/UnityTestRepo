@@ -5,9 +5,9 @@ using UnityEngine.Purchasing;
 public class PurchaseService : MonoBehaviour, IStoreListener
 {
     // Reusable goods. More suitable for buying game currency, etc.
-    public enum EConsumableGoods { Diamond }
+    public enum EConsumableGoods { diamond }
     // Not reusable products. More suitable for disabling ads, etc.
-    public enum ENonConsumableGoods { DisablingAds }
+    public enum ENonConsumableGoods { disabling_ads }
     
     private static IStoreController m_StoreController;
     private static IExtensionProvider m_StoreExtenshionProvider;
@@ -25,13 +25,14 @@ public class PurchaseService : MonoBehaviour, IStoreListener
     private void InitializePurchasing()
     {
         var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
-
+        
         var cArr = Enum.GetValues(typeof(EConsumableGoods)); 
         var nonCArr = Enum.GetValues(typeof(ENonConsumableGoods)); 
-
+        
         foreach (var consumable in cArr) builder.AddProduct(consumable.ToString(), ProductType.Consumable);
         foreach (var nonConsumable in nonCArr) builder.AddProduct(nonConsumable.ToString(), ProductType.NonConsumable);
         
+        Debug.Log("Befor try to initialize");
         UnityPurchasing.Initialize(this, builder);
     }
     
@@ -108,12 +109,12 @@ public class PurchaseService : MonoBehaviour, IStoreListener
         Debug.Log($"OnPurchaseFailed: FAIL. Product: {product.definition.storeSpecificId}, {failureReason}");
     }
     
-    public void OnInitialized(IStoreController controller, IExtensionProvider extenshions)
+    public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
     {
         Debug.Log("OnInitialized: PASS");
 
         m_StoreController = controller;
-        m_StoreExtenshionProvider = extenshions;
+        m_StoreExtenshionProvider = extensions;
     }
     
     public void OnInitializeFailed(InitializationFailureReason error)

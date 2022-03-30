@@ -22,7 +22,7 @@ public class Store : MonoBehaviour
     {
         switch (args.purchasedProduct.definition.id)
         {
-            case "Diamond":
+            case "diamond":
                 _coins += 10;
                 text.text = _coins.ToString();
                 break;
@@ -33,7 +33,7 @@ public class Store : MonoBehaviour
     {
         switch (args.purchasedProduct.definition.id)
         {
-            case "DisablingAds":
+            case "disabling_ads":
                 _nonConsumableButton.interactable = false;
                 _buttonText.text = "Куплено";
                 break;

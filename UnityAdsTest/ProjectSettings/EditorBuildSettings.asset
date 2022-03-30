@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/In-AppPurchasing.unity
+    guid: 884eb3f2ae226124a990e615508d2fd6
+  - enabled: 1
     path: Assets/Scenes/AdvertisingTest.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   m_configObjects: {}
