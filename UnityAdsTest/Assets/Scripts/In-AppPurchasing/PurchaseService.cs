@@ -7,7 +7,7 @@ public class PurchaseService : MonoBehaviour, IStoreListener
     // Reusable goods. More suitable for buying game currency, etc.
     public enum EConsumableGoods { diamond }
     // Not reusable products. More suitable for disabling ads, etc.
-    public enum ENonConsumableGoods { disabling_ads }
+    public enum ENonConsumableGoods { disabling_ad }
     
     private static IStoreController m_StoreController;
     private static IExtensionProvider m_StoreExtenshionProvider;
@@ -32,7 +32,6 @@ public class PurchaseService : MonoBehaviour, IStoreListener
         foreach (var consumable in cArr) builder.AddProduct(consumable.ToString(), ProductType.Consumable);
         foreach (var nonConsumable in nonCArr) builder.AddProduct(nonConsumable.ToString(), ProductType.NonConsumable);
         
-        Debug.Log("Befor try to initialize");
         UnityPurchasing.Initialize(this, builder);
     }
     

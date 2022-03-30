@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Purchasing;
@@ -18,11 +19,18 @@ public class Store : MonoBehaviour
         text.text = _coins.ToString();
     }
 
+    public void OnCloseApp()
+    {
+        Application.Quit();
+    }
+    
     private void OnPurchaseConsumable(PurchaseEventArgs args)
     {
-        switch (args.purchasedProduct.definition.id)
+        Enum.TryParse(args.purchasedProduct.definition.id, out PurchaseService.EConsumableGoods productName);
+        
+        switch (productName)
         {
-            case "diamond":
+            case PurchaseService.EConsumableGoods.diamond:
                 _coins += 10;
                 text.text = _coins.ToString();
                 break;
@@ -31,14 +39,14 @@ public class Store : MonoBehaviour
     
     private void OnPurchaseNonConsumable(PurchaseEventArgs args)
     {
-        switch (args.purchasedProduct.definition.id)
+        Enum.TryParse(args.purchasedProduct.definition.id, out PurchaseService.ENonConsumableGoods productName);
+        
+        switch (productName)
         {
-            case "disabling_ads":
+            case PurchaseService.ENonConsumableGoods.disabling_ad:
                 _nonConsumableButton.interactable = false;
                 _buttonText.text = "Куплено";
                 break;
         }
     }
-
-    
 }
